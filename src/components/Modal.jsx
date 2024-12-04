@@ -15,12 +15,6 @@ const Modal = ({ children, isOpen, onClose }) => {
       onClick={handleBackdropClick}
     >
       <div className="relative bg-white p-10 rounded-lg shadow-lg w-full max-w-4xl overflow-y-auto max-h-[90vh]">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-        >
-          <RiCloseLargeLine size={20} color="black" />
-        </button>
         {children}
       </div>
     </div>

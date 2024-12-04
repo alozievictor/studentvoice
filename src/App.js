@@ -12,10 +12,12 @@ import Regester from "./pages/Regester";
 import RegSch from "./pages/RegSch";
 import Admin_Index from "./pages/Admin/Admin_Index";
 import AdminViewStudent from "./components/Admin_comp/AdminViewStudent";
+import AllFeedback from "./components/Admin_comp/AllFeedback";
+import ViewFeedbacks from "./pages/Admin/ViewFeedbacks";
+import FeedbackQuestionnaires from "./pages/Student/Feedbacks";
+import FeedbackDetails from "./pages/Student/FeedbackDetails";
 
 function App() {
-
-
   function ProtectedRoute({ children }) {
     const { User } = UseAppContext();
     if (!User) {
@@ -26,7 +28,7 @@ function App() {
 
   return (
     <div className="App">
-     <Router>
+      <Router>
         <Routes>
           <Route path="/" element={<Landingpage />} />
           <Route path="/login" element={<Login />} />
@@ -35,7 +37,7 @@ function App() {
           <Route
             path="/admin/dashboard"
             element={
-              <ProtectedRoute >
+              <ProtectedRoute>
                 <Admin_Index />
               </ProtectedRoute>
             }
@@ -43,19 +45,43 @@ function App() {
           <Route
             path="/admin/dashoard/view/students"
             element={
-              <ProtectedRoute >
+              <ProtectedRoute>
                 <AdminViewStudent />
               </ProtectedRoute>
             }
           />
-          {/* <Route
-            path="/user/profile"
+          <Route
+            path="/admin/dashoard/view/feedbacks"
             element={
-              <ProtectedRoute >
-                <Profile />
+              <ProtectedRoute>
+                <AllFeedback />
               </ProtectedRoute>
             }
-          /> */}
+          />
+          <Route
+            path="/admin/dashoard/view/feedbacks/details/:id"
+            element={
+              <ProtectedRoute>
+                <ViewFeedbacks />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/questions"
+            element={
+              <ProtectedRoute>
+                <FeedbackQuestionnaires />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/questions/details/:id"
+            element={
+              <ProtectedRoute>
+                <FeedbackDetails />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </div>

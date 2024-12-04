@@ -40,7 +40,7 @@ const FeedbackTable = () => {
     <CustomTable
       headers={headers}
       data={FeedsBack}
-      navigateTo="/admin/dashboard/view/feedback"
+      navigateTo="/admin/dashoard/view/feedbacks"
       title="Feedbacks"
       viewAllText="View all"
     />

@@ -52,14 +52,14 @@ const Admin_Index = () => {
     <div>
       <Layout>
         <div className="w-full text-blavk font-3xl mt-32">
-          <div className="flex justify-between items-center">
+          <div className="lg:flex justify-between items-center">
             <div className="grid gap-1">
               <p className="text-black text-sm font-normal">Admin Dashboard</p>
               <h2 className="text-xl text-black font-medium">
                 Welcome to Admin_Name
               </h2>
             </div>
-            <div className="flex items-center space-x-5">
+            <div className="flex items-center space-x-5 md:my-5">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
@@ -77,7 +77,7 @@ const Admin_Index = () => {
             </div>
           </div>
 
-          <div className="w-full my-8 lg:flex justify-between items-center">
+          <div className="w-full my-8 grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
             <DashCard title="Conversion Rate" digit="500" />
             <DashCard title="Total Student" digit="310" />
             <DashCard title="Total Feedback" digit="500" />

@@ -1,4 +1,3 @@
-
 export default [
     {
         "state": "Abia",
@@ -124,7 +123,7 @@ export default [
             "Gamawa",
             "Ganjuwa",
             "Giade",
-            "Itas\/Gadau",
+            "Itas-Gadau",
             "Jama'Are",
             "Katagum",
             "Kirfi",
