@@ -15,6 +15,7 @@ const Landingpage = () => {
       navigate("/login");
       return
     }
+    navigate("/student/questions")
      toast.success("You are logged in ")
   }
 

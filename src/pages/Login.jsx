@@ -15,7 +15,7 @@ const Login = () => {
       return;
     }
     toast.success("Login Successful");
-    navigate("/student/questions");
+    navigate("/");
   };
 
   return (

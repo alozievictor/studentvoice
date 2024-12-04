@@ -59,7 +59,7 @@ const Admin_Index = () => {
                 Welcome to Admin_Name
               </h2>
             </div>
-            <div className="flex items-center space-x-5 md:my-5">
+            <div className="flex items-center space-x-5 pt-10 lg:pt-0">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}

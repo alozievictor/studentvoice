@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { FaUser, FaBars, FaTimes } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { UseAppContext } from "../service/context";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const navigate = useNavigate();
+  const { User } = UseAppContext();
 
   const handleClick = () => setNav(!nav);
   const handleClose = () => {
@@ -72,10 +76,17 @@ const Navbar = () => {
     document.body.style.overflow = "";
   };
 
+  const HandleLogin = () => {
+    if (User) {
+      navigate("/admin/dashboard");
+      return;
+    }
+    toast.error("Opps Login");
+    return;
+  };
+
   return (
-    <header
-      className={`fixed w-full bg-transparent`}
-    >
+    <header className={`fixed w-full bg-transparent`}>
       <div className={`w-full top-0 h-[10vh] pt-3`}>
         <div className="md:w-[80%] mx-auto px-2 flex justify-between items-center">
           {windowWidth > 768 ? (
@@ -122,7 +133,9 @@ const Navbar = () => {
             )}
 
             <div className="md:flex items-center space-x-5 pl-20 md:pl-36 ">
-              <Link to="/login"
+              <button
+                type="button"
+                onClick={HandleLogin}
                 className={`py-2.5 px-5 border text-base text-center cursor-pointer lg:w-24 rounded-md ${
                   scrolling
                     ? "bg-blue-700 text-white"
@@ -130,7 +143,7 @@ const Navbar = () => {
                 }`}
               >
                 Login
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -140,7 +153,7 @@ const Navbar = () => {
           >
             {nav ? (
               <FaTimes
-              size={20}
+                size={20}
                 className={`w-8 flex justify-end items-end text-black`}
               />
             ) : (
