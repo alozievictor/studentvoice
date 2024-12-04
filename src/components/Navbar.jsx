@@ -74,12 +74,9 @@ const Navbar = () => {
 
   return (
     <header
-      className={`md:fixed drop-shadow relative w-full transition-colors duration-300  ${
-        scrolling ? "bg-white w-full" : "bg-transparent w-full"
-      } `}
-      style={{ zIndex: nav ? "10" : "1" }}
+      className={`fixed w-full bg-transparent`}
     >
-      <div className={`w-full top-0 h-[11vh] pt-3`}>
+      <div className={`w-full top-0 h-[10vh] pt-3`}>
         <div className="md:w-[80%] mx-auto px-2 flex justify-between items-center">
           {windowWidth > 768 ? (
             <Link to="/" class="flex items-center">
@@ -89,9 +86,7 @@ const Navbar = () => {
                 alt="Flowbite Logo"
               />
               <span
-                class={`self-center text-2xl font-semibold whitespace-nowrap ${
-                  scrolling ? "text-blue-800" : "text-white"
-                }`}
+                class={`self-center text-2xl font-semibold whitespace-nowrap text-blue-800`}
               >
                 StudentVoice
               </span>
@@ -104,25 +99,21 @@ const Navbar = () => {
                 alt="Flowbite Logo"
               />
               <span
-                class={`self-center text-2xl font-semibold whitespace-nowrap ${
-                  scrolling ? "text-blue-700" : "text-white"
-                }`}
+                class={`self-center text-2xl font-semibold text-white whitespace-nowrap`}
               >
                 StudentVoice
               </span>
             </Link>
           )}
 
-          <div className="flex items-center lg:space-x-5">
+          <div className="flex items-center justify-between lg:space-x-5 ">
             {windowWidth > 768 && (
               <div className="flex flex-col items-center md:flex-row md:space-x-8">
                 {links.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`text-base font-medium pt-2 focus:outline-none cursor-pointer hover:text-blue-600 transition duration-300 ${
-                      scrolling ? "text-blue-800" : "text-white "
-                    }`}
+                    className={`text-base font-medium focus:outline-none cursor-pointer text-white hover:text-blue-600 transition duration-300 `}
                   >
                     {link.label}
                   </Link>
@@ -130,9 +121,9 @@ const Navbar = () => {
               </div>
             )}
 
-            <div className="md:flex mt-1.5 items-center space-x-5">
+            <div className="md:flex items-center space-x-5 pl-20 md:pl-36 ">
               <Link to="/login"
-                className={`p-2.5 border text-base text-center cursor-pointer lg:w-24 rounded-md tra ${
+                className={`py-2.5 px-5 border text-base text-center cursor-pointer lg:w-24 rounded-md ${
                   scrolling
                     ? "bg-blue-700 text-white"
                     : "border-white hover:border-blue-700 hover:text-white hover:bg-blue-700 text-white"
@@ -144,20 +135,18 @@ const Navbar = () => {
           </div>
 
           <div
-            className="md:hidden w-full px-2 pt-3 flex justify-end items-end"
+            className="md:hidden w-full px-2 pt-3 flex justify-end items-end z-50"
             onClick={toggleNav}
           >
             {nav ? (
               <FaTimes
-                className={`w-6 flex justify-end items-end ${
-                  scrolling ? "text-white" : "text-black"
-                }`}
+              size={20}
+                className={`w-8 flex justify-end items-end text-black`}
               />
             ) : (
               <FaBars
-                className={`w-6 flex justify-end items-end ${
-                  scrolling ? "text-white" : "text-black"
-                }`}
+                size={20}
+                className={`w-8 flex justify-end items-end text-white`}
               />
             )}
           </div>
@@ -166,12 +155,12 @@ const Navbar = () => {
         <ul
           className={`${
             !nav ? "-translate-x-full" : "translate-x-0"
-          } md:hidden w-full bg-white h-[100vh] drop-shadow-sm absolute top-0 left-0 transition-transform duration-300 mt-[16%]`}
+          } md:hidden w-full bg-white h-[100vh] drop-shadow-sm absolute top-0 left-0 transition-transform duration-300 pt-10 z-40 `}
         >
           {links.map((link) => (
             <li
               key={link.to}
-              className="border-b-2 border-zinc-100 w-full text-center py-5 cursor-pointer hover:text-[#f39c12] transition duration-300"
+              className="border-b-2 border-zinc-100 w-full text-center py-7 cursor-pointer hover:text-[#f39c12] transition duration-300"
             >
               <Link
                 onClick={handleClose}

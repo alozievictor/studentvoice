@@ -23,10 +23,10 @@ const Landingpage = () => {
       <Navbar/>
       <div className="hero w-full flex justify-center items-center">
         <div className="w-full mx-auto py-10 grid gap-4">
-          <h1 className="text-white font-bold text-6xl text-center">
+          <h1 className="text-white font-bold text-4xl lg:5xl xl:text-6xl text-center">
             Empowering Voices, Transforming <span className="text-blue-500">Education</span>.
           </h1>
-          <p className="text-gray-200 font-normal text-lg text-center w-[50%] mx-auto">
+          <p className="text-gray-200 font-normal text-base lg:text-lg text-center w-[90%] lg:w-[50%] mx-auto">
             StudentVoice is a platform designed to bridge the gap between
             students and educators by fostering open communication, promoting
             improvement, and enhancing learning experiences.
@@ -34,7 +34,7 @@ const Landingpage = () => {
           <button
             type="button"
             onClick={HandleStarted}
-            className="text-blue-700 px-5 py-3.5 bg-white rounded-lg font-bold w-40 mx-auto cursor-auto mt-5 drop-shadow"
+            className="text-blue-700 px-5 py-3.5 bg-white rounded-lg font-bold w-40 mx-auto cursor-auto mt-5 lg:drop-shadow"
           >
             Get Started
           </button>
