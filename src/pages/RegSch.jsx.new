@@ -8,7 +8,6 @@ const RegSch = () => {
   const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState("");
   const [selectedLGA, setSelectedLGA] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     institutionName: "",
     email: "",
@@ -27,6 +26,7 @@ const RegSch = () => {
   const lgas = selectedStateData ? selectedStateData.lgas : [];
 
   useEffect(() => {
+    // Initialize institutions array in localStorage if it doesn't exist
     if (!localStorage.getItem('studentVoiceInstitutions')) {
       localStorage.setItem('studentVoiceInstitutions', JSON.stringify([]));
     }
@@ -69,69 +69,56 @@ const RegSch = () => {
     
     if (!validateForm()) return;
     
-    setIsSubmitting(true);
+    // Get existing institutions
+    const institutions = JSON.parse(localStorage.getItem('studentVoiceInstitutions') || '[]');
     
-    // Simulate network delay
-    setTimeout(() => {
-      try {
-        // Get existing institutions
-        const institutions = JSON.parse(localStorage.getItem('studentVoiceInstitutions') || '[]');
-        
-        // Check if institution already exists
-        if (institutions.some(inst => inst.email === formData.email)) {
-          setErrors(prev => ({ ...prev, email: "Institution with this email already exists" }));
-          setIsSubmitting(false);
-          return;
-        }
-        
-        // Create new institution
-        const newInstitution = {
-          id: Date.now().toString(),
-          ...formData,
-          createdAt: new Date().toISOString()
-        };
-        
-        // Add institution to array and save back to localStorage
-        institutions.push(newInstitution);
-        localStorage.setItem('studentVoiceInstitutions', JSON.stringify(institutions));
-        
-        // Create admin user for this institution
-        const users = JSON.parse(localStorage.getItem('studentVoiceUsers') || '[]');
-        const adminUser = {
-          id: `admin-${Date.now()}`,
-          name: `Admin - ${formData.institutionName}`,
-          email: formData.email,
-          password: formData.adminPassword,
-          role: 'admin',
-          institutionId: newInstitution.id
-        };
-        
-        users.push(adminUser);
-        localStorage.setItem('studentVoiceUsers', JSON.stringify(users));
-        
-        toast.success("Institution registered successfully! You can now login as admin");
-        navigate('/login');
-      } catch (error) {
-        console.error("Registration error:", error);
-        toast.error("Registration failed. Please try again.");
-      } finally {
-        setIsSubmitting(false);
-      }
-    }, 1500); // 1.5 second delay to show loading state
+    // Check if institution already exists
+    if (institutions.some(inst => inst.email === formData.email)) {
+      setErrors(prev => ({ ...prev, email: "Institution with this email already exists" }));
+      return;
+    }
+    
+    // Create new institution
+    const newInstitution = {
+      id: Date.now().toString(),
+      ...formData,
+      createdAt: new Date().toISOString()
+    };
+    
+    // Add institution to array and save back to localStorage
+    institutions.push(newInstitution);
+    localStorage.setItem('studentVoiceInstitutions', JSON.stringify(institutions));
+    
+    // Create admin user for this institution
+    const users = JSON.parse(localStorage.getItem('studentVoiceUsers') || '[]');
+    const adminUser = {
+      id: `admin-${Date.now()}`,
+      name: `Admin - ${formData.institutionName}`,
+      email: formData.email,
+      password: formData.adminPassword,
+      role: 'admin',
+      institutionId: newInstitution.id
+    };
+    
+    users.push(adminUser);
+    localStorage.setItem('studentVoiceUsers', JSON.stringify(users));
+    
+    toast.success("Institution registered successfully! You can now login as admin");
+    navigate('/login');
   };
 
   return (
-    <div class="bg-white flex justify-center items-center h-[100vh] overflow-hidden border p-4">
-      <div class="w-1/2 h-screen hidden lg:block py-4">
+    <div className="bg-white flex justify-center items-center h-[100vh] overflow-hidden border p-4">
+      <div className="w-1/2 h-screen hidden lg:block py-4">
         <img
           src={Bg}
           alt="photos"
-          class="object-cover w-full h-full rounded-xl"
+          className="object-cover w-full h-full rounded-xl"
         />
       </div>
-      <div class="lg:px-36 lg:py-10 md:p-20 p-8 w-full lg:w-1/2 overflow-y-auto max-h-[90vh]">
+      <div className="lg:px-36 lg:py-10 md:p-20 p-8 w-full lg:w-1/2 overflow-y-auto max-h-[90vh]">
         <div className="mb-5">
-          <h1 class="text-2xl font-semibold mb-4">Create Account</h1>
+          <h1 className="text-2xl font-semibold mb-4">Create Account</h1>
           <p className="text-base font-medium text-black">
             A quick and easy way to bring your school onboard the StudentVoice
             platform.
@@ -172,6 +159,7 @@ const RegSch = () => {
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
+          
           <div className="">
             <label
               htmlFor="website"
@@ -226,7 +214,6 @@ const RegSch = () => {
               autoComplete="off"
             />
           </div>
-
           <div className="grid grid-cols-2 gap-5">
             <div className="">
               <label
@@ -243,8 +230,8 @@ const RegSch = () => {
                 className={`w-full border ${errors.state ? 'border-red-500' : 'border-gray-300'} rounded-xl p-3 focus:outline-none focus:border-blue-800`}
               >
                 <option value="">Select state</option>
-                {State.map((stateData) => (
-                  <option key={stateData.state} value={stateData.state}>
+                {State.map((stateData, index) => (
+                  <option key={index} value={stateData.state}>
                     {stateData.state}
                   </option>
                 ))}
@@ -264,8 +251,8 @@ const RegSch = () => {
                 className={`w-full border ${errors.lga ? 'border-red-500' : 'border-gray-300'} rounded-xl p-3 focus:outline-none focus:border-blue-800`}
               >
                 <option value="">Select LGA</option>
-                {lgas.map((lga) => (
-                  <option key={lga} value={lga}>
+                {lgas.map((lga, index) => (
+                  <option key={index} value={lga}>
                     {lga}
                   </option>
                 ))}
@@ -273,7 +260,6 @@ const RegSch = () => {
               {errors.lga && <p className="text-red-500 text-sm mt-1">{errors.lga}</p>}
             </div>
           </div>
-
           <div className="">
             <label htmlFor="address" className="block text-gray-950 font-semibold my-2">
               Address
@@ -294,7 +280,7 @@ const RegSch = () => {
               htmlFor="adminPassword"
               className="block text-gray-950 font-semibold my-2"
             >
-              Admin Password
+              Admin password
             </label>
             <input
               type="password"
@@ -307,28 +293,18 @@ const RegSch = () => {
             />
             {errors.adminPassword && <p className="text-red-500 text-sm mt-1">{errors.adminPassword}</p>}
           </div>
+
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-800 hover:bg-blue-600 text-white text-lh font-semibold rounded-xl p-4 w-full mt-5 flex justify-center items-center"
+            className="bg-blue-800 hover:bg-blue-600 text-white text-lh font-semibold rounded-xl p-4 w-full mt-5"
           >
-            {isSubmitting ? (
-              <>
-                <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
-                Registering...
-              </>
-            ) : (
-              'Register Institution'
-            )}
+            Register institution
           </button>
         </form>
-        <div className="flex justify-between items-center mt-6">
-          <div class="text-start">
-            Have an account
-            <Link to="/register" class="hover:underline text-blue-700 ml-1">
-              Login
-            </Link>
-          </div>
+        <div className="mt-6 text-center">
+          <Link to="/login" className="text-blue-700 hover:underline">
+            Back to login
+          </Link>
         </div>
       </div>
     </div>

@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "./Layout";
 import DashCard from "../../components/Admin_comp/DashCard";
 import AdminStudent from "../../components/Admin_comp/AdminStudent";
 import TimeLineChart from "../../components/Admin_comp/TimeLineChart";
 import Modal from "../../components/Modal";
 import FeedbackTable from "../../components/Admin_comp/FeedbackTable";
+import { UseAppContext } from "../../service/context";
+import { useNavigate } from "react-router-dom";
 
 const Admin_Index = () => {
-  
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [isModalOpen2, setIsModalOpen2] = React.useState(false);
+  const { User } = UseAppContext();
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [studentCount, setStudentCount] = useState(0);
+  const [feedbackCount, setFeedbackCount] = useState(0);
+  const [institutionCount, setInstitutionCount] = useState(0);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -19,6 +25,38 @@ const Admin_Index = () => {
     }
     return;
   };
+  
+  useEffect(() => {
+    // Get counts from localStorage
+    const users = JSON.parse(localStorage.getItem('studentVoiceUsers') || '[]');
+    const feedbacks = JSON.parse(localStorage.getItem('studentVoiceFeedbacks') || '[]');
+    const institutions = JSON.parse(localStorage.getItem('studentVoiceInstitutions') || '[]');
+    
+    // Count students (users with role='student')
+    const students = users.filter(user => user.role === 'student');
+    setStudentCount(students.length);
+    
+    // Count all feedbacks
+    setFeedbackCount(feedbacks.length);
+    
+    // Count institutions
+    setInstitutionCount(institutions.length);
+    
+    // For institution-specific admin, filter counts by institutionId
+    if (User && User.role === 'admin' && User.institutionId) {
+      const institutionStudents = users.filter(
+        user => user.role === 'student' && user.institutionId === User.institutionId
+      );
+      setStudentCount(institutionStudents.length);
+      
+      // Get feedbacks for this institution's students
+      const institutionStudentIds = institutionStudents.map(student => student.id);
+      const institutionFeedbacks = feedbacks.filter(
+        feedback => institutionStudentIds.includes(feedback.userId)
+      );
+      setFeedbackCount(institutionFeedbacks.length);
+    }
+  }, [User]);
 
   const TimeData = [
     { x: "2022-01-01", y: 0 },
@@ -60,27 +98,34 @@ const Admin_Index = () => {
               </h2>
             </div>
             <div className="flex items-center space-x-5 pt-10 lg:pt-0">
-              <button
+              {/* <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
                 className="font-normal text-sm border border-gray-400 text-gray-600 rounded px-5 py-2.5"
               >
                 Add Student
-              </button>
-              <button
+              </button> */}
+              {/* <button
                 type="button"
                 onClick={()=> setIsModalOpen2(true)}
-                className="text-white font-normal text-sm bg-blue-700 rounded px-5 py-2.5 hover:bg-blue-800"
+                className="text-white font-normal text-sm bg-blue-700 rounded px-5 py-2.5 hover:bg-blue-800 mx-2"
               >
                 Create Feedback
+              </button> */}
+              <button
+                type="button"
+                onClick={() => navigate('/admin/questions')}
+                className="text-white font-normal text-sm bg-green-700 rounded px-5 py-2.5 hover:bg-green-800"
+              >
+                Manage Questionnaires
               </button>
             </div>
           </div>
 
           <div className="w-full my-8 grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
-            <DashCard title="Conversion Rate" digit="500" />
-            <DashCard title="Total Student" digit="310" />
-            <DashCard title="Total Feedback" digit="500" />
+            <DashCard title="Total Institutions" digit={institutionCount} />
+            <DashCard title="Total Students" digit={studentCount} />
+            <DashCard title="Total Feedbacks" digit={feedbackCount} />
           </div>
         </div>
         <div className="w-full grid lg:grid-cols-5 gap-4 my-6 py-5">

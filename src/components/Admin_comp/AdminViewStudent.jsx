@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../pages/Admin/Layout";
 import DashCard from "./DashCard";
 import CustomTable from "../CustomTable";
 import Modal from "../Modal";
 import { toast } from "react-toastify";
+import { UseAppContext } from "../../service/context";
 
 const AdminViewStudent = () => {
+  const { User } = UseAppContext();
+  const [studentCount, setStudentCount] = useState(0);
   const headers = ["Name", "Gender", "Email", "Phone", "Age", "Department"];
+  
+  useEffect(() => {
+    // Get users from localStorage
+    const users = JSON.parse(localStorage.getItem('studentVoiceUsers') || '[]');
+    
+    // Count students (users with role='student')
+    const students = users.filter(user => user.role === 'student');
+    setStudentCount(students.length);
+    
+    // For institution-specific admin, filter by institutionId
+    if (User && User.role === 'admin' && User.institutionId) {
+      const institutionStudents = users.filter(
+        user => user.role === 'student' && user.institutionId === User.institutionId
+      );
+      setStudentCount(institutionStudents.length);
+    }
+  }, [User]);
   const data = [
     {
       id: 1,
@@ -97,7 +117,7 @@ const AdminViewStudent = () => {
     <div className="w-full">
       <Layout>
         <div className=" w-full mb-5 mt-32">
-          <DashCard title="Total Student" digit="275" />
+          <DashCard title="Total Students" digit={studentCount} />
 
           <div className="w-full mt-8">
             <CustomTable

@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { Dropdown } from "flowbite-react";
 import { HiCog, HiCurrencyDollar, HiLogout, HiViewGrid } from "react-icons/hi";
+import { UseAppContext } from "../../service/context";
+import { useNavigate } from "react-router-dom";
 
 const Admin_Nav = () => {
+  const { User, logout } = UseAppContext();
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   return (
     <div className="w-full h-[10vh] border-b-2 drop-shadow-sm bg-white lg:flex justify-center items-center fixed top-0">
       <div className="w-[95%] lg:w-[90%] flex justify-between items-center py-3">
@@ -68,28 +78,31 @@ const Admin_Nav = () => {
               </svg>
             </a>
           </div>
-          <div class="relative flex items-center ml-2 lg:ml-4">
-            <a
-              href="javascript:void(0)"
-              class="flex items-center justify-center w-10 h-10 text-base font-medium leading-normal text-center align-middle transition-colors duration-150 ease-in-out bg-transparent border border-solid shadow-none cursor-pointer rounded-2xl text-stone-500 border-stone-200 hover:text-primary active:text-primary focus:text-primary"
+          <div className="relative flex items-center ml-2 lg:ml-4">
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="flex items-center justify-center w-10 h-10 text-base font-medium leading-normal text-center align-middle transition-colors duration-150 ease-in-out bg-transparent border border-solid shadow-none cursor-pointer rounded-2xl text-stone-500 border-stone-200 hover:text-primary active:text-primary focus:text-primary"
             >
-              <FaRegUser size={20} color="" />
-            </a>
+              <FaRegUser size={20} />
+            </button>
+            
+            {showDropdown && (
+              <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 border">
+                <div className="px-4 py-3 border-b">
+                  <p className="text-sm font-medium">{User?.name || 'User'}</p>
+                  <p className="text-xs text-gray-500 truncate">{User?.email || 'user@example.com'}</p>
+                </div>
+                <div className="py-1">
+                  <button onClick={() => navigate(User?.role === 'admin' ? '/admin/dashboard' : '/student/questions')} className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <HiViewGrid className="mr-2" /> Dashboard
+                  </button>
+                  <button onClick={handleLogout} className="flex w-full items-center px-4 py-2 text-sm text-red-700 hover:bg-gray-100">
+                    <HiLogout className="mr-2" /> Logout
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-{/* 
-          <Dropdown label="Dropdown">
-            <Dropdown.Header>
-              <span className="block text-sm">Bonnie Green</span>
-              <span className="block truncate text-sm font-medium">
-                bonnie@flowbite.com
-              </span>
-            </Dropdown.Header>
-            <Dropdown.Item icon={HiViewGrid}>Dashboard</Dropdown.Item>
-            <Dropdown.Item icon={HiCog}>Settings</Dropdown.Item>
-            <Dropdown.Item icon={HiCurrencyDollar}>Earnings</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item icon={HiLogout}>Sign out</Dropdown.Item>
-          </Dropdown> */}
         </div>
       </div>
     </div>

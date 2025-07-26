@@ -1,9 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CustomTable from "../CustomTable";
+import { UseAppContext } from "../../service/context";
 
 const AdminStudent = () => {
+  const { User } = UseAppContext();
   const headers = ["Name", "Gender", "Email", "Department"];
-  const data = [
+  const [students, setStudents] = useState([]);
+  
+  useEffect(() => {
+    // Get users from localStorage
+    const users = JSON.parse(localStorage.getItem('studentVoiceUsers') || '[]');
+    
+    // Filter to get only students
+    let studentUsers = users.filter(user => user.role === 'student');
+    
+    // For institution-specific admin, filter by institutionId
+    if (User && User.role === 'admin' && User.institutionId) {
+      studentUsers = studentUsers.filter(
+        student => student.institutionId === User.institutionId
+      );
+    }
+    
+    // Format for display
+    const formattedStudents = studentUsers.map(user => ({
+      id: user.id,
+      name: user.name || 'N/A',
+      gender: 'Not specified', // Add this field to registration if needed
+      email: user.email,
+      department: user.department || 'Computer Science' // Add this field to registration if needed
+    }));
+    
+    setStudents(formattedStudents);
+  }, [User]);
+  
+  // If no students, use sample data
+  const data = students.length > 0 ? students : [
     {
       id: 1,
       name: "John Doe",

@@ -76,13 +76,28 @@ const Navbar = () => {
     document.body.style.overflow = "";
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+  
   const HandleLogin = () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    
     if (User) {
-      navigate("/admin/dashboard");
-      return;
+      // Redirect based on role
+      if (User.role === 'admin') {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/student/questions");
+      }
+    } else {
+      navigate("/login");
     }
-    toast.error("Opps Login");
-    return;
+    
+    // Reset loading state after a short delay
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   return (
@@ -136,13 +151,18 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={HandleLogin}
-                className={`py-2.5 px-5 border text-base text-center cursor-pointer lg:w-24 rounded-md ${
+                disabled={isLoading}
+                className={`py-2.5 px-5 border text-base text-center cursor-pointer lg:w-24 rounded-md flex justify-center items-center ${
                   scrolling
                     ? "bg-blue-700 text-white"
                     : "border-white hover:border-blue-700 hover:text-white hover:bg-blue-700 text-white"
                 }`}
               >
-                Login
+                {isLoading ? (
+                  <div className="w-4 h-4 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                ) : (
+                  User ? 'Dashboard' : 'Login'
+                )}
               </button>
             </div>
           </div>

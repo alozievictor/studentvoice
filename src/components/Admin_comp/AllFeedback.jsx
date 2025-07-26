@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../pages/Admin/Layout";
 import DashCard from "./DashCard";
 import CustomTable from "../CustomTable";
@@ -6,38 +6,69 @@ import Modal from "../Modal";
 import { toast } from "react-toastify";
 
 const AllFeedback = () => {
-  const headers = ["Name", "Date", "Department"];
-  const FeedsBack = [
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [totalFeedbacks, setTotalFeedbacks] = useState(0);
+  const [pendingFeedbacks, setPendingFeedbacks] = useState(0);
+  const [overdueFeedbacks, setOverdueFeedbacks] = useState(0);
+  const headers = ["Name", "Student", "Date", "Department"];
+  
+  useEffect(() => {
+    // Get feedbacks from localStorage
+    const storedFeedbacks = JSON.parse(localStorage.getItem('studentVoiceFeedbacks') || '[]');
+    
+    // Count total feedbacks
+    setTotalFeedbacks(storedFeedbacks.length);
+    
+    // For demonstration purposes, we'll consider feedbacks older than 7 days as overdue
+    // and those without responses as pending
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.setDate(now.getDate() - 7));
+    
+    const overdueCount = storedFeedbacks.filter(feedback => {
+      const feedbackDate = new Date(feedback.submittedAt);
+      return feedbackDate < sevenDaysAgo;
+    }).length;
+    
+    setOverdueFeedbacks(overdueCount);
+    
+    // For this demo, we'll set pending as 30% of total feedbacks
+    setPendingFeedbacks(Math.floor(storedFeedbacks.length * 0.3));
+    
+    // Format for display
+    const formattedFeedbacks = storedFeedbacks.map(feedback => ({
+      id: feedback.id,
+      name: feedback.questionnaireTitle,
+      student: feedback.userName,
+      date: new Date(feedback.submittedAt).toLocaleDateString(),
+      department: feedback.department
+    }));
+    
+    setFeedbacks(formattedFeedbacks);
+  }, []);
+  
+  // If no feedbacks, use sample data
+  const FeedsBack = feedbacks.length > 0 ? feedbacks : [
     {
-      id: 1,
-      name: "Lectuerer evaluation",
+      id: "1",
+      name: "Lecturer evaluation",
+      student: "John Doe",
       date: "10/09/2024",
       department: "Computer Science",
     },
     {
-      id: 2,
-      name: "Lectuerer evaluation",
+      id: "2",
+      name: "Lecturer evaluation",
+      student: "Jane Smith",
       date: "10/09/2024",
       department: "Computer Science",
     },
     {
-      id: 3,
-      name: "Lectuerer evaluation",
+      id: "3",
+      name: "Course Content Assessment",
+      student: "Alice Johnson",
       date: "10/09/2024",
       department: "Computer Science",
-    },
-    {
-      id: 4,
-      name: "Lectuerer evaluation",
-      date: "10/09/2024",
-      department: "Computer Science",
-    },
-    {
-      id: 5,
-      name: "Lectuerer evaluation",
-      date: "10/09/2024",
-      department: "Nursing",
-    },
+    }
   ];
   const Department = [
     {
@@ -79,9 +110,9 @@ const AllFeedback = () => {
       <Layout>
         <div className="w-full mb-5 mt-32">
           <div className="w-full my-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <DashCard title="Total Feedback" digit="50" />
-            <DashCard title="Overdue Feedback" digit="15" />
-            <DashCard title="Pending Feedback" digit="35" />
+            <DashCard title="Total Feedback" digit={totalFeedbacks} />
+            <DashCard title="Overdue Feedback" digit={overdueFeedbacks} />
+            <DashCard title="Pending Feedback" digit={pendingFeedbacks} />
           </div>
 
           <div className="w-full mt-8">

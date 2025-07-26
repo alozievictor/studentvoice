@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Layout from "./Layout";
 
 // Custom scrollbar styles
@@ -28,26 +29,62 @@ if (typeof document !== 'undefined') {
 }
 
 const ViewFeedbacks = () => {
+  const { id } = useParams();
   const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [feedbacks, setFeedbacks] = useState([]);
+  
+  useEffect(() => {
+    // Get feedbacks from localStorage
+    const storedFeedbacks = JSON.parse(localStorage.getItem('studentVoiceFeedbacks') || '[]');
+    
+    // Format for display
+    const formattedFeedbacks = storedFeedbacks.map(feedback => ({
+      id: feedback.id,
+      type: feedback.questionnaireTitle,
+      date: new Date(feedback.submittedAt).toLocaleDateString(),
+      message: Object.entries(feedback.responses)
+        .map(([questionId, response]) => `Q${questionId}: ${response}`)
+        .join('\n'),
+      student: feedback.userName,
+      department: feedback.department
+    }));
+    
+    setFeedbacks(formattedFeedbacks);
+    
+    // If we have an ID from URL params, select that feedback
+    if (id && formattedFeedbacks.length > 0) {
+      const feedback = formattedFeedbacks.find(f => f.id === id);
+      if (feedback) {
+        setSelectedFeedback(feedback);
+      }
+    }
+  }, [id]);
 
-  const FeedbackData = [
+  // Fallback to sample data if no feedbacks in localStorage
+  const FeedbackData = feedbacks.length > 0 ? feedbacks : [
     {
-      id: 1,
+      id: "1",
       type: "Lecturer Feedback",
       date: "30-11-2024",
-      message: "He is a very crazy lecturer that knows what his doing",
+      message: "He is a very good lecturer that knows what he's doing",
+      student: "John Doe",
+      department: "Computer Science"
     },
     {
-      id: 2,
+      id: "2",
       type: "Course Feedback",
       date: "29-11-2024", 
       message: "The course content is comprehensive and engaging",
+      student: "Jane Smith",
+      department: "Computer Science"
     },
     {
-      id: 3,
+      id: "3",
       type: "Course Feedback",
       date: "29-11-2024", 
       message: "The course content is comprehensive and engaging",
+      student: "Alice Johnson",
+      department: "Computer Science"
     },
     {
       id: 4,
